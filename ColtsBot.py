@@ -23,12 +23,10 @@ def getLinks():
     soup = BeautifulSoup(htmlfile)
 
     for link in soup.findAll('a', href=True):
-        items.append(link.get('href'))
+        if('/videos/videos' in link.get('href')):
+            print(link.get('href'))
+            video_links.append(link.get('href'))
     
-    for x in items:
-        if('/videos/videos' in x):
-            video_links.append(x)
-
     for x in video_links:
         website = "http://www.colts.com/" + x
         htmlfile = url.urlopen(website)
