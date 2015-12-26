@@ -7,24 +7,51 @@ items = []
 video_links = []
 mp4_links = []
 titles = []
-html_str = "<!DOCTYPE html><html><head><title>Page Title</title></head><body><h1>Colt Daily Videos</h1>"
+news_links = []
+news_titles = []
+summaries = []
+html_str = "<!DOCTYPE html><html><head><title>Page Title</title></head><body>"
 run = True
 
-#get videos from colts
-def getLinks():
+#get news from colts
+def getNewsLinks():
+    global news_links
+    global news_titles
+    global summaries
     global html_str
-    global run
+    html_str +="<h1>Colt Daily News</h1>"
+    website = "http://www.colts.com/news/all-news.html"
+    htmlfile = url.urlopen(website)
+    soup = BeautifulSoup(htmlfile)
+    for link in soup.findAll('a', href=True):
+        if('news/article' in link.get('href')):
+            page = "http://www.colts.com" + link.get('href')
+            news_links.append(page)
+            news_titles.append(link.get('title'))
+        
+    #remove duplicate links
+    news_links = remove_duplicates(news_links)
+    news_titles = remove_duplicates(news_titles)
+
+    for x in range(len(news_titles)):
+        html_str += format_data(news_titles[x] , news_links[x])
+        
+    
+            
+#get videos from colts
+def getVideoLinks():
+    global html_str
     global items
     global video_links
     global mp4_links
     global titles
+    html_str +="<h1>Colt Daily Videos</h1>"
     website = "http://www.colts.com/videos/all-videos.html"
     htmlfile = url.urlopen(website)
     soup = BeautifulSoup(htmlfile)
 
     for link in soup.findAll('a', href=True):
         if('/videos/videos' in link.get('href')):
-            print(link.get('href'))
             video_links.append(link.get('href'))
     
     for x in video_links:
@@ -43,19 +70,13 @@ def getLinks():
     titles = remove_duplicates(titles)
            
     for x in range(len(titles)):
-        #print(titles[x], mp4_links[x])
         title = remove_tags(str(titles[x]))
         html_str += format_data(title , mp4_links[x])
-        run = False
-    html_str += "</body></html>"
-    HTML_file=open("Colts.html", "w")
-    HTML_file.write(html_str)
-    HTML_file.close()
 
 
 #Format data
-def format_data(title, mp4_link):
-    hyperlink_format = '<a href=%s>%s</a><br>' %(mp4_link, title)
+def format_data(title, link):
+    hyperlink_format = '<a href=%s>%s</a><br>' %(link, title)
     return hyperlink_format
 
 #remove dubplicates in list
@@ -74,4 +95,10 @@ def remove_tags(text):
     return TAG_RE.sub('', text)
 
 while(run):
-    getLinks()
+    getVideoLinks()
+    getNewsLinks()
+    html_str += "</body></html>"
+    HTML_file=open("Colts.html", "w")
+    HTML_file.write(html_str)
+    HTML_file.close()
+    run = False
