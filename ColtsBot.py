@@ -3,22 +3,15 @@ import urllib.request as url
 import re
 
 TAG_RE = re.compile(r'<[^>]+>')
-items = []
-video_links = []
-mp4_links = []
-titles = []
-news_links = []
-news_titles = []
-summaries = []
 html_str = "<!DOCTYPE html><html><head><title>Page Title</title></head><body>"
 run = True
 
 #get news from colts
 def getNewsLinks():
-    global news_links
-    global news_titles
-    global summaries
     global html_str
+    news_links = []
+    news_titles = []
+    summaries =[]
     html_str +="<h1>Colt Daily News</h1>"
     website = "http://www.colts.com/news/all-news.html"
     htmlfile = url.urlopen(website)
@@ -41,10 +34,10 @@ def getNewsLinks():
 #get videos from colts
 def getVideoLinks():
     global html_str
-    global items
-    global video_links
-    global mp4_links
-    global titles
+    items = []
+    video_links = []
+    mp4_links = []
+    titles = []
     html_str +="<h1>Colt Daily Videos</h1>"
     website = "http://www.colts.com/videos/all-videos.html"
     htmlfile = url.urlopen(website)
