@@ -64,7 +64,8 @@ def getVideoLinks():
            
     for x in range(len(titles)):
         title = remove_tags(str(titles[x]))
-        html_str += format_data(title , mp4_links[x])
+        print(format_link(mp4_links[x]))
+        html_str += format_data(title , format_link(mp4_links[x]))
 
 
 #Format data
@@ -72,6 +73,11 @@ def format_data(title, link):
     hyperlink_format = '<a href=%s>%s</a><br>' %(link, title)
     return hyperlink_format
 
+def format_link(link):
+    link = link.split('http://')
+    formatted_link = 'http://' + link[len(link)-1]
+    return formatted_link
+    
 #remove dubplicates in list
 def remove_duplicates(objects):
     last = objects[-1]
