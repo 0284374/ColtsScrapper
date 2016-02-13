@@ -46,17 +46,22 @@ def getVideoLinks():
     for link in soup.findAll('a', href=True):
         if('/videos/videos' in link.get('href')):
             video_links.append(link.get('href'))
-    
-    for x in video_links:
-        website = "http://www.colts.com/" + x
-        htmlfile = url.urlopen(website)
-        soup = BeautifulSoup(htmlfile)
-        for link in soup.findAll('meta'):
-            if('mp4' in link.get('content')):
-                mp4_links.append(link.get('content'))
+
+    video_links = remove_duplicates(video_links)
+
+    try:   
+        for x in video_links:
+            website = "http://www.colts.com" + x
+            htmlfile = url.urlopen(website)
+            soup = BeautifulSoup(htmlfile)
+            for link in soup.findAll('meta'):
+                if('mp4' in link.get('content')):
+                    mp4_links.append(link.get('content'))
                 
-        for title in soup.findAll('title'):
-            titles.append(title)
+            for title in soup.findAll('title'):
+                titles.append(title)
+    except UnicodeEncodeError:
+        pass
 
     #remove duplicate links
     mp4_links = remove_duplicates(mp4_links)
